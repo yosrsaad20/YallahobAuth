@@ -6,7 +6,7 @@ import * as z from 'zod';
 // Define a schema for input validation 
 const UserSchema = z
   .object({
-    userusername: z.string().min(1, 'Userusername is required').max(100),
+    username: z.string().min(1, 'Username is required').max(100),
     email: z.string().min(1, 'Email is required').email('Invalid email'),
     password: z
       .string()

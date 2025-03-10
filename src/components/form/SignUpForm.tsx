@@ -16,24 +16,25 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import GoogleSignInButton from '../GoogleSignInButton';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 const FormSchema = z
   .object({
-    username: z.string().min(1, 'Username is required').max(100),
-    email: z.string().min(1, 'Email is required').email('Invalid email'),
+    username: z.string().min(1, 'Le nom d\'utilisateur est requis').max(100),
+    email: z.string().min(1, 'L\'email est requis').email('Email invalide'),
     password: z
       .string()
-      .min(1, 'Password is required')
-      .min(8, 'Password must have than 8 characters'),
-    confirmPassword: z.string().min(1, 'Password confirmation is required'),
+      .min(1, 'Le mot de passe est requis')
+      .min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+    confirmPassword: z.string().min(1, 'La confirmation du mot de passe est requise'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
-    message: 'Password do not match',
+    message: 'Les mots de passe ne correspondent pas',
   });
 
 const SignUpForm = () => {
-  const router= useRouter();
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -45,22 +46,22 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    const response= await fetch('api/user',{
+    const response = await fetch('api/user', {
       method: 'POST',
       headers: {
-        'Content-type' : 'application/json'
+        'Content-type': 'application/json',
       },
       body: JSON.stringify({
         username: values.username,
         email: values.email,
-        password: values.password
-      })
-    })
+        password: values.password,
+      }),
+    });
 
-    if (response.ok){
-      router.push('/sign-in')
-    }else{
-      console.error('Regsitration failed')
+    if (response.ok) {
+      router.push('/sign-in');
+    } else {
+      toast.error("Oops, something went wrong!");
     }
   };
 
@@ -73,7 +74,7 @@ const SignUpForm = () => {
             name='username'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Nom d'utilisateur</FormLabel>
                 <FormControl>
                   <Input placeholder='johndoe' {...field} />
                 </FormControl>
@@ -99,11 +100,11 @@ const SignUpForm = () => {
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
                   <Input
                     type='password'
-                    placeholder='Enter your password'
+                    placeholder='Entrez votre mot de passe'
                     {...field}
                   />
                 </FormControl>
@@ -116,10 +117,10 @@ const SignUpForm = () => {
             name='confirmPassword'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Re-Enter your password</FormLabel>
+                <FormLabel>Confirmez votre mot de passe</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Re-Enter your password'
+                    placeholder='Ressaisissez votre mot de passe'
                     type='password'
                     {...field}
                   />
@@ -130,17 +131,17 @@ const SignUpForm = () => {
           />
         </div>
         <Button className='w-full mt-6' type='submit'>
-          Sign up
+          S'inscrire
         </Button>
       </form>
       <div className='mx-auto my-4 flex w-full items-center justify-evenly before:mr-4 before:block before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px after:flex-grow after:bg-stone-400'>
-        or
+        ou
       </div>
-      <GoogleSignInButton>Sign up with Google</GoogleSignInButton>
+      <GoogleSignInButton>S'inscrire avec Google</GoogleSignInButton>
       <p className='text-center text-sm text-gray-600 mt-2'>
-        If you don&apos;t have an account, please&nbsp;
+        Si vous avez déjà un compte, veuillez&nbsp;
         <Link className='text-blue-500 hover:underline' href='/sign-in'>
-          Sign in
+          vous connecter
         </Link>
       </p>
     </Form>
