@@ -59,9 +59,10 @@ const SignUpForm = () => {
     });
 
     if (response.ok) {
-      router.push('/sign-in');
+      toast.success('Inscription réussie !');
+      router.push('/add/step-one'); // Redirect to the step-one page after successful signup
     } else {
-      toast.error("Oops, something went wrong!");
+      toast.error("Oops, quelque chose s'est mal passé !");
     }
   };
 
